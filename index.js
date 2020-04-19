@@ -8,6 +8,7 @@ client.on("ready", () => {
 const prefix = "h!"
 // const baseUrl = "https://verify.eryn.io/api/user/"
 
+
 client.on("message", async message => {
   if(message.author.bot) return;
   if(message.content.indexOf(prefix) !== 0) return;
@@ -30,18 +31,21 @@ client.on("message", async message => {
  if(command === "whois") {
  	const member = message.mentions.members.first();
  	 axios.get(`https://verify.eryn.io/api/user/${member.id}`)
-  	.then(function(response) {
+  	.then(async function(response) {
   	if(response.data.status === "error") {
   			message.channel.send("Parece que esse usuário não está verificado na database do RoVer.")
   			return
   		}
   	if(response.data.status === "ok") {
+  	const getRobloxDetails = await axios.get(`https://users.roblox.com/v1/users/${response.data.robloxId}`)
 	const whoisEmbed = new Discord.MessageEmbed()
 	.setColor('#ed2f21')
-	.setTitle('Whois')
+	.setDescription(getRobloxDetails.data.description)
+	.setTitle(`Informações sobre ${response.data.robloxUsername}`)
 	.addFields(
 		{ name: 'Roblox Username', value: response.data.robloxUsername },
-		{ name: 'Roblox ID', value: response.data.robloxId },
+		{ name: 'Conta criada em', value: getRobloxDetails.data.created },
+		{ name: 'Perfil do Roblox', value: `https://www.roblox.com/users/${response.data.robloxId}/profile` },
 	)
 	.setTimestamp();
 	message.channel.send(whoisEmbed)
