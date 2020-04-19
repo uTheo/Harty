@@ -7,6 +7,7 @@ client.on("ready", () => {
 });
 const prefix = "r!"
 // const baseUrl = "https://verify.eryn.io/api/user/"
+
 client.on("message", async message => {
   if(message.author.bot) return;
   if(message.content.indexOf(prefix) !== 0) return;
@@ -26,5 +27,27 @@ client.on("message", async message => {
   		}
   	})
   }
+ if(command === "whois") {
+ 	const member = message.mentions.members.first();
+ 	 axios.get(`https://verify.eryn.io/api/user/${member.id}`)
+  	.then(function(response) {
+  	if(response.data.status === "error") {
+  			message.channel.send("Parece que esse usuário não está verificado na database do RoVer.")
+  			return
+  		}
+  	if(response.data.status === "ok") {
+	const whoisEmbed = new Discord.MessageEmbed()
+	.setColor('#ed2f21')
+	.setTitle('Whois')
+	.addFields(
+		{ name: 'Roblox Username', value: response.data.robloxUsername },
+		{ name: 'Roblox ID', value: response.data.robloxId },
+	)
+	.setTimestamp();
+	message.channel.send(whoisEmbed)
+  		}
+
+  	})
+ }
 })
 client.login("NzAxNDI4MDQ0MDY5NjAxMzM0.XpxV1w.3Hw5EjajoDt3YiKY1h0g-SuWZIk")
