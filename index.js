@@ -5,7 +5,7 @@ client.on("ready", () => {
   console.log(`[BOT] OK`); 
   client.user.setActivity(`Familía HART`);
 });
-const prefix = "r!"
+const prefix = "h!"
 // const baseUrl = "https://verify.eryn.io/api/user/"
 
 client.on("message", async message => {
