@@ -21,7 +21,7 @@ client.on("message", async message => {
   			return
   		}
   		if(response.data.status === "ok") {
-  		let verified = message.guild.roles.cache.get("701428883353894953");
+  		let verified = message.guild.roles.cache.get("498294566483656707");
   		message.member.roles.add(verified).catch(console.error);
   		message.channel.send(`Seja Bem-Vindo, **${response.data.robloxUsername}**, espero que tenha bom proveito dos chats do servidor (=`)
   		}
