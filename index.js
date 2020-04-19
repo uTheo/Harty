@@ -1,5 +1,6 @@
 const Discord = require("discord.js")
 const axios = require("axios")
+const moment = require("moment")
 const client = new Discord.Client()
 client.on("ready", () => {
   console.log(`[BOT] OK`); 
@@ -30,6 +31,7 @@ client.on("message", async message => {
   }
  if(command === "whois") {
  	const member = message.mentions.members.first();
+ 	if(!member) return message.channel.send("Por Favor, mencione algum usuário.")
  	 axios.get(`https://verify.eryn.io/api/user/${member.id}`)
   	.then(async function(response) {
   	if(response.data.status === "error") {
@@ -37,14 +39,17 @@ client.on("message", async message => {
   			return
   		}
   	if(response.data.status === "ok") {
+  	moment.locale('pt-br')
   	const getRobloxDetails = await axios.get(`https://users.roblox.com/v1/users/${response.data.robloxId}`)
+  	const createdDate = moment(getRobloxDetails.data.created)
 	const whoisEmbed = new Discord.MessageEmbed()
 	.setColor('#ed2f21')
 	.setDescription(getRobloxDetails.data.description)
+	.setThumbnail(`http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${response.data.robloxUsername}`)
 	.setTitle(`Informações sobre ${response.data.robloxUsername}`)
 	.addFields(
 		{ name: 'Roblox Username', value: response.data.robloxUsername },
-		{ name: 'Conta criada em', value: getRobloxDetails.data.created },
+		{ name: 'Conta criada em', value: createdDate },    
 		{ name: 'Perfil do Roblox', value: `https://www.roblox.com/users/${response.data.robloxId}/profile` },
 	)
 	.setTimestamp();
