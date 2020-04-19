@@ -3,7 +3,7 @@ const axios = require("axios")
 const client = new Discord.Client()
 client.on("ready", () => {
   console.log(`[BOT] OK`); 
-  client.user.setActivity(`free robux`);
+  client.user.setActivity(`Familía HART`);
 });
 const prefix = "r!"
 // const baseUrl = "https://verify.eryn.io/api/user/"
