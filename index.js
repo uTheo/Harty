@@ -7,6 +7,7 @@ client.on("ready", () => {
   client.user.setActivity(`Familía HART`);
 });
 const prefix = "h!"
+require('dotenv').config()
 // const baseUrl = "https://verify.eryn.io/api/user/"
 
 
@@ -66,4 +67,4 @@ client.on("message", async message => {
   	
  }
 })
-client.login("NzAxNDI4MDQ0MDY5NjAxMzM0.XpxV1w.3Hw5EjajoDt3YiKY1h0g-SuWZIk")
+client.login(process.env.TOKEN)
