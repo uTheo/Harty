@@ -9,26 +9,22 @@ client.on("ready", () => {
 const prefix = "h!"
 require('dotenv').config()
 // const baseUrl = "https://verify.eryn.io/api/user/"
-
-
 client.on("message", async message => {
   if(message.author.bot) return;
   if(message.content.indexOf(prefix) !== 0) return;
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
   if(command === "verify") {
-  axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
-  	.then(function(response) {
-  		if(response.data.status === "error") {
-  			message.channel.send("Olá! Por favor se verifique em: https://verify.eryn.io (Clique em **Sign With Discord**), após isso use o comando r!verify novamente.")
-  			return
-  		}
-  		if(response.data.status === "ok") {
-  		let verified = message.guild.roles.cache.get("498294566483656707");
-  		message.member.roles.add(verified).catch(console.error);
-  		message.channel.send(`Seja Bem-Vindo, **${response.data.robloxUsername}**, espero que tenha bom proveito dos chats do servidor (=`)
-  		}
-  	})
+  try {
+     const response = axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
+      if(response.data.status === "ok") {
+      let verified = message.guild.roles.cache.get("498294566483656707");
+      message.member.roles.add(verified).catch(console.error);
+      message.channel.send(`Seja Bem-Vindo, **${response.data.robloxUsername}**, espero que tenha bom proveito dos chats do servidor (=`)
+      }
+  } catch(e) {
+    message.channel.send("Olá! Por favor se verifique em: https://verify.eryn.io (Clique em **Sign With Discord**), após isso use o comando r!verify novamente.")
+  }
   }
  if(command === "whois") {
  	const member = message.mentions.members.first();
@@ -63,8 +59,6 @@ client.on("message", async message => {
   	} catch(e) {
   	message.channel.send('Parece que esse usuário não está verificado na database do RoVer.')
   	}
-
-  	
  }
 })
 client.login(process.env.TOKEN)
