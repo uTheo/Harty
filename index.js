@@ -16,14 +16,14 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
   if(command === "verify") {
   try {
-     const response = axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
+     const response = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
       if(response.data.status === "ok") {
       let verified = message.guild.roles.cache.get("498294566483656707");
       message.member.roles.add(verified).catch(console.error);
       message.channel.send(`Seja Bem-Vindo, **${response.data.robloxUsername}**, espero que tenha bom proveito dos chats do servidor (=`)
       }
   } catch(e) {
-    message.channel.send("Olá! Por favor se verifique em: https://verify.eryn.io (Clique em **Sign With Discord**), após isso use o comando r!verify novamente.")
+   message.channel.send(`Olá! Por favor se verifique em: https://verify.eryn.io (Clique em **Sign With Discord**), após isso use o comando ${prefix}verify novamente.`)
   }
   }
  if(command === "whois") {
