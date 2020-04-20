@@ -32,31 +32,38 @@ client.on("message", async message => {
  if(command === "whois") {
  	const member = message.mentions.members.first();
  	if(!member) return message.channel.send("Por Favor, mencione algum usuário.")
- 	 axios.get(`https://verify.eryn.io/api/user/${member.id}`)
-  	.then(async function(response) {
-  	if(response.data.status === "error") {
+  	try {
+  	const rover = await axios.get(`https://verify.eryn.io/api/user/${member.id}`)
+  	if(rover.data.status === "error") {
   			message.channel.send("Parece que esse usuário não está verificado na database do RoVer.")
   			return
   		}
-  	if(response.data.status === "ok") {
+  	if(rover.data.status === "ok") {
   	moment.locale('pt-br')
-  	const getRobloxDetails = await axios.get(`https://users.roblox.com/v1/users/${response.data.robloxId}`)
+  	const getRobloxDetails = await axios.get(`https://users.roblox.com/v1/users/${rover.data.robloxId}`)
+  	const getRobloxStatus = await axios.get(`https://api.roblox.com/users/${rover.data.robloxId}/onlinestatus`)
+  	const lastOnline = getRobloxStatus.data.LastOnline
   	const createdDate = moment(getRobloxDetails.data.created)
 	const whoisEmbed = new Discord.MessageEmbed()
 	.setColor('#ed2f21')
 	.setDescription(getRobloxDetails.data.description)
-	.setThumbnail(`http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${response.data.robloxUsername}`)
-	.setTitle(`Informações sobre ${response.data.robloxUsername}`)
+	.setThumbnail(`http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${rover.data.robloxUsername}`)
+	.setTitle(`Informações sobre ${rover.data.robloxUsername}`)
 	.addFields(
-		{ name: 'Roblox Username', value: response.data.robloxUsername },
-		{ name: 'Conta criada em', value: createdDate },    
-		{ name: 'Perfil do Roblox', value: `https://www.roblox.com/users/${response.data.robloxId}/profile` },
+		{ name: 'Roblox Username', value: rover.data.robloxUsername },
+		{ name: 'Conta criada em', value: createdDate },
+		{ name: 'Status', value: getRobloxStatus.data.LastLocation },
+		{ name: 'Ultima vez que esteve online', value: moment(lastOnline) },
+		{ name: 'Perfil do Roblox', value: `https://www.roblox.com/users/${rover.data.robloxId}/profile` },
 	)
 	.setTimestamp();
 	message.channel.send(whoisEmbed)
   		}
+  	} catch(e) {
+  	message.channel.send('Parece que esse usuário não está verificado na database do RoVer.')
+  	}
 
-  	})
+  	
  }
 })
 client.login("NzAxNDI4MDQ0MDY5NjAxMzM0.XpxV1w.3Hw5EjajoDt3YiKY1h0g-SuWZIk")
