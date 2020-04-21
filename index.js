@@ -6,6 +6,8 @@ client.on("ready", () => {
   console.log(`[BOT] OK`); 
   client.user.setActivity(`Familía HART`);
 });
+
+
 const prefix = "h!"
 require('dotenv').config()
 // const baseUrl = "https://verify.eryn.io/api/user/"
@@ -19,7 +21,9 @@ client.on("message", async message => {
      const response = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
       if(response.data.status === "ok") {
       let verified = message.guild.roles.cache.get("498294566483656707");
+      let noVerified = message.guild.roles.cache.get("567787227258552333>")
       message.member.roles.add(verified).catch(console.error);
+      message.member.roles.remove(noVerified).catch(console.error);
       message.channel.send(`Seja Bem-Vindo, **${response.data.robloxUsername}**, espero que tenha bom proveito dos chats do servidor (=`)
       }
   } catch(e) {
