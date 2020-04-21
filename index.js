@@ -23,18 +23,14 @@ client.on("message", async message => {
       message.channel.send(`Seja Bem-Vindo, **${response.data.robloxUsername}**, espero que tenha bom proveito dos chats do servidor (=`)
       }
   } catch(e) {
-   message.channel.send(`Olá! Por favor se verifique em: https://verify.eryn.io (Clique em **Sign With Discord**), após isso use o comando ${prefix}verify novamente.`)
+   message.channel.send(`Olá! Se verifique em: https://verify.eryn.io (Clique em **Sign With Discord**), após isso use o comando ${prefix}verify novamente.`)
   }
   }
  if(command === "whois") {
- 	const member = message.mentions.members.first();
- 	if(!member) return message.channel.send("Por Favor, mencione algum usuário.")
+ 	const member = message.mentions.members.first() || client.users.cache.get(args[0])
+ 	if(!member) return message.channel.send("Você esqueceu de mencionar ou indicar um ID.")
   	try {
   	const rover = await axios.get(`https://verify.eryn.io/api/user/${member.id}`)
-  	if(rover.data.status === "error") {
-  			message.channel.send("Parece que esse usuário não está verificado na database do RoVer.")
-  			return
-  		}
   	if(rover.data.status === "ok") {
   	moment.locale('pt-br')
   	const getRobloxDetails = await axios.get(`https://users.roblox.com/v1/users/${rover.data.robloxId}`)
