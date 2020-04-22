@@ -25,6 +25,7 @@ client.on("message", async message => {
       message.member.roles.add(verified).catch(console.error);
       message.member.roles.remove(noVerified).catch(console.error);
       message.channel.send(`Seja Bem-Vindo, **${response.data.robloxUsername}**, espero que tenha bom proveito dos chats do servidor (=`)
+      console.log(`[LOG] ${message.member.user.tag} se verificou com a conta ${robloxUsername}`)
       }
   } catch(e) {
    message.channel.send(`Olá! Se verifique em: https://verify.eryn.io (Clique em **Sign With Discord**), após isso use o comando ${prefix}verify novamente.`)
