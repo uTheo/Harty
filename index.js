@@ -18,6 +18,7 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
   if(command === "verify") {
   try {
+  	const user = client.users.cache.get(message.author.id)
      const response = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
       if(response.data.status === "ok") {
       let verified = message.guild.roles.cache.get("498294566483656707");
@@ -25,17 +26,18 @@ client.on("message", async message => {
       message.member.roles.add(verified).catch(console.error);
       message.member.roles.remove(noVerified).catch(console.error);
       message.channel.send(`Seja Bem-Vindo, **${response.data.robloxUsername}**, espero que tenha bom proveito dos chats do servidor (=`)
-      const user = client.users.cache.get(message.author.id)
       console.log(`[LOG] ${response.data.robloxUsername} se verificou com ${user.tag}`)
       }
   } catch(e) {
    message.channel.send(`Olá! Se verifique em: https://verify.eryn.io (Clique em **Sign With Discord**), após isso use o comando ${prefix}verify novamente.`)
+   console.log(`[LOG] ${user.tag} tentou se verificar, porém parece que ele não está verificado no banco de dados do RoVer ou ocorreu um erro inesperado.`)
   }
   }
  if(command === "whois") {
  	const member = message.mentions.members.first() || client.users.cache.get(args[0])
  	if(!member) return message.channel.send("Você esqueceu de mencionar ou indicar um ID.")
   	try {
+  	const user = client.users.cache.get(message.author.id)
   	const rover = await axios.get(`https://verify.eryn.io/api/user/${member.id}`)
   	if(rover.data.status === "ok") {
   	moment.locale('pt-br')
@@ -57,9 +59,11 @@ client.on("message", async message => {
 	)
 	.setTimestamp();
 	message.channel.send(whoisEmbed)
+	console.log(`[LOG] ${user.tag} executou o comando whois com sucesso.`)
   		}
   	} catch(e) {
   	message.channel.send('Parece que esse usuário não está verificado na database do RoVer.')
+  	console.log(`[LOG] ${user.tag} tentou executar o comando whois, porém sem sucesso.`)
   	}
  }
 })
