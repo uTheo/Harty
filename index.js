@@ -29,23 +29,33 @@ client.on('message', async message => {
           message.channel.send(`:green_apple: | Seja Bem Vindo ${primaryResponse.data.robloxUsername}! `)
           return
       }
-      const x = setInterval(async () => {
-        const secondResponse = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
-        if(secondResponse.data.robloxId === undefined) {
-          success = false
-        } else {
-          success = true
-        }
-        if(success === true) {
-          message.member.roles.add(verified).catch(console.error)
-          message.member.roles.remove(noVerified).catch(console.error)
-          message.channel.send(`:green_apple: | Seja Bem Vindo ${primaryResponse.data.robloxUsername}! `)
-          clearInterval(x)
-          return
-        }
-      }, 5000);
     } catch(e){
-      message.channel.send(':warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando confirmação da ``API``, assim que for obtido você será verificado.')
+      if(e.response.status === 404) {
+        let success = false
+        message.channel.send(':warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando confirmação da ``API``, assim que for obtido você será verificado.')
+        const b = setTimeout(() => {
+          clearInterval(x)
+          console.log('Timeout')
+          message.channel.send(':x: | Após 1 minuto, eu não consegui realizar a verificação, por favor tente novamente.')
+        }, 60000);
+        const x = setInterval(async () => {
+          console.log('Interval')
+          const secondResponse = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
+          if(secondResponse.data.robloxId === undefined) {
+            success = false
+          } else {
+            success = true
+          }
+          if(success === true) {
+            message.member.roles.add(verified).catch(console.error)
+            message.member.roles.remove(noVerified).catch(console.error)
+            message.channel.send(`:green_apple: | Seja Bem Vindo ${primaryResponse.data.robloxUsername}! `)
+            clearInterval(x)
+            clearTimeout(b)
+            return
+          }
+        }, 5000);
+      }
       }
   }
   if (command === 'whois') {
