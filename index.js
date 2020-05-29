@@ -32,11 +32,13 @@ client.on('message', async message => {
     } catch(e){
       if(e.response.status === 404) {
         let success = false
-        message.channel.send(':warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando confirmação da ``API``, assim que for obtido você será verificado.')
+        message.channel.send('(Isso está em BETA, se você tiver problemas me envie uma mensagem no privado <@326123612153053184>):warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando confirmação da ``API``, assim que for obtido você será verificado.')
         const b = setTimeout(() => {
-          clearInterval(x)
-          console.log('Timeout')
-          message.channel.send(':x: | Após 1 minuto, eu não consegui realizar a verificação, por favor tente novamente.')
+          if(success = false) {
+            clearInterval(x)
+            console.log('Timeout')
+            message.channel.send(':x: | Após 1 minuto, eu não consegui realizar a verificação, por favor tente novamente.')
+          }
         }, 60000);
         const x = setInterval(async () => {
           console.log('Interval')
