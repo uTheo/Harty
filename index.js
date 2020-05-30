@@ -36,8 +36,8 @@ client.on('message', async message => {
         const b = setTimeout(() => {
             clearInterval(x)
             console.log('Timeout')
-            message.channel.send(':x: | Após 1 minuto, eu não consegui realizar a verificação, por favor tente novamente.')
-        }, 60000);
+            message.channel.send(':x: | Após 2 minutos, eu não consegui realizar a verificação, por favor tente novamente.')
+        }, 120000);
         const x = setInterval(async () => {
           console.log('Interval')
           const secondResponse = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
