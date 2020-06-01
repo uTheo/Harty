@@ -4,12 +4,14 @@ const moment = require('moment')
 const client = new Discord.Client()
 client.on('ready', () => {
   console.log('[BOT] OK')
-  client.user.setActivity('Familía HART')
+  client.user.setActivity(`Verificando... | V.${require('./package.json').version}`)
 })
+
+ // TODO: if a user not have a not verified role and send a message, the bot add the no verified role.
+// TODO: COOLDOWN (due to api ratelimit woosh)
 
 const prefix = 'h!'
 require('dotenv').config()
-// const baseUrl = "https://verify.eryn.io/api/user/"
 client.on('message', async message => {
   if (message.author.bot) return
   if (message.content.indexOf(prefix) !== 0) return
@@ -17,29 +19,25 @@ client.on('message', async message => {
   const command = args.shift().toLowerCase()
   const verified = message.guild.roles.cache.get('498294566483656707')
   const noVerified = message.guild.roles.cache.get('567787227258552333')
-  if (command === 'verify') {
+  if (command === 'verify') 
     try {
-      let success = false
-      const user = client.users.cache.get(message.author.id)
       const primaryResponse = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
       if(primaryResponse.data.status === 'ok') {
-          success = true
+          // success = true
           message.member.roles.add(verified).catch(console.error)
           message.member.roles.remove(noVerified).catch(console.error)
-          message.channel.send(`:green_apple: | Seja Bem Vindo ${primaryResponse.data.robloxUsername}! `)
+          message.reply(`:green_apple: | Seja Bem Vindo ${primaryResponse.data.robloxUsername}! `)
           return
       }
     } catch(e){
       if(e.response.status === 404) {
         let success = false
-        message.channel.send('(Isso está em BETA, se você tiver problemas me envie uma mensagem no privado <@326123612153053184>) | :warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando confirmação da ``API``, assim que for obtido você será verificado.')
+        message.reply(':warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando...')
         const b = setTimeout(() => {
             clearInterval(x)
-            console.log('Timeout')
-            message.channel.send(':x: | Após 1 minuto, eu não consegui realizar a verificação, por favor tente novamente.')
-        }, 60000);
+            message.reply(':x: | Após 2 minutos, eu não consegui realizar a verificação, por favor tente novamente.')
+        }, 120000);
         const x = setInterval(async () => {
-          console.log('Interval')
           const secondResponse = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
           if(secondResponse.data.robloxId === undefined) {
             success = false
@@ -49,23 +47,23 @@ client.on('message', async message => {
           if(success === true) {
             message.member.roles.add(verified).catch(console.error)
             message.member.roles.remove(noVerified).catch(console.error)
-            message.channel.send(`:green_apple: | Seja Bem Vindo ${primaryResponse.data.robloxUsername}! `)
+            message.reply(`:green_apple: | Seja Bem Vindo ${primaryResponse.data.robloxUsername}! `)
             clearInterval(x)
             clearTimeout(b)
             return
           }
         }, 5000);
+      } else {
+        message.reply('Parece que um erro fatal ocorreu, por favor tente novamente.')
       }
       }
-  }
   if (command === 'whois') {
     const member = message.mentions.members.first() || client.users.cache.get(args[0])
-    if (!member) return message.channel.send('Você esqueceu de mencionar ou indicar um ID.')
+    if (!member) return message.reply('Você esqueceu de mencionar ou indicar um ID.')
     try {
       const user = client.users.cache.get(message.author.id)
       const rover = await axios.get(`https://verify.eryn.io/api/user/${member.id}`)
       if (rover.data.status === 'ok') {
-        moment.locale('pt-br')
         const getRobloxStatus = await axios.get(`https://api.roblox.com/users/${rover.data.robloxId}/onlinestatus`)
         const lastOnline = getRobloxStatus.data.LastOnline
         const createdDate = moment(getRobloxDetails.data.created)
@@ -75,7 +73,7 @@ client.on('message', async message => {
           .setThumbnail(`http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${rover.data.robloxUsername}`)
           .setTitle(`Informações sobre ${rover.data.robloxUsername}`)
           .addFields(
-            { name: 'Roblox Username', value: rover.data.robloxUsername },
+            { name: 'Username', value: rover.data.robloxUsername },
             { name: 'Conta criada em', value: createdDate },
             { name: 'Status', value: getRobloxStatus.data.LastLocation },
             { name: 'Ultima vez que esteve online', value: moment(lastOnline) },
@@ -86,16 +84,23 @@ client.on('message', async message => {
         console.log(`[LOG] ${user.tag} executou o comando whois com sucesso.`)
   		}
   	} catch (e) {
-  	message.channel.send('Parece que esse usuário não está verificado na database do RoVer.')
-  	console.log(`[LOG] ${user.tag} tentou executar o comando whois, porém sem sucesso.`)
+    if(e.response.status === 404) {
+      message.channel.send('Parece que esse usuário não está verificado na database do RoVer.')
+  	  console.log(`[LOG] ${user.tag} tentou executar o comando whois, porém sem sucesso.`)
+    } else {
+      message.channel.send('Parece que um erro fatal ocorreu, por favor tente novamente.')
+    }
   	}
   }
   if (command === 'reverse') {
-    message.member.roles.remove(verified).catch(console.error)
-    message.member.roles.add(noVerified).catch(console.error)
-    message.channel.send('Seu cargo de verificado foi retirado.')
+    try {
+      message.member.roles.remove(verified).catch(console.error)
+      message.member.roles.add(noVerified).catch(console.error)
+      message.reply('Seu cargo de verificado foi retirado.')
+    } catch (e) {
+      message.reply('Um erro fatal ocorreu, por favor tente novamente')
+    }
   }
-})
 client.on('guildMemberAdd', async member => {
   try {
     const response = await axios.get(`https://verify.eryn.io/api/user/${member.id}`)
@@ -107,7 +112,10 @@ client.on('guildMemberAdd', async member => {
       member.roles.remove(noVerified).catch(console.error)
     }
   } catch (e) {
-    console.log(`[AutoVerify] ${member.displayName} não existe no banco de dados da RoVer, ou aconteceu um erro inesperado.`)
+    if(e.response.status === 404) {
+      console.log(`[AutoVerify] ${member.displayName} não existe no banco de dados da RoVer, ou aconteceu um erro inesperado.`)
+    }
   }
+})
 })
 client.login(process.env.TOKEN)

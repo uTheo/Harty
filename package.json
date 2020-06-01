@@ -1,12 +1,16 @@
 {
   "name": "harty-verify",
-  "version": "1.0.0",
+  "version": "2.0.3",
   "description": "Verify our members.",
   "main": "index.js",
   "scripts": {
     "test": "node tests.js"
   },
-  "author": "FelipeSazz",
+  "author": {
+    "name": "FelipeSazz",
+    "email": "felipe@sazz.fail",
+    "url": "https://sazz.fail"
+  },
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.2",
