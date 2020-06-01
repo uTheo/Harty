@@ -30,7 +30,7 @@ client.on('message', async message => {
           return
       }
     } catch(e){
-      if(e.response.data.errorCode === 404) {
+      if(e.response.data.errorCode === 404 || !e.response.data === undefined) {
         let success = false
         message.reply(':warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando...')
         const b = setTimeout(() => {
@@ -86,7 +86,7 @@ client.on('message', async message => {
 	console.log(`[LOG] ${user.tag} executou o comando whois com sucesso.`)
   		}
   	} catch (e) {
-    if(e.response.data.errorCode === 404) {
+    if(e.response.data.errorCode === 404 || !e.response.data === undefined) {
       message.channel.send('Parece que esse usuário não está verificado na database do RoVer.')
   	  console.log(`[LOG] ${user.tag} tentou executar o comando whois, porém sem sucesso.`)
     } else {
