@@ -35,8 +35,13 @@ client.on('message', async message => {
         message.reply(':warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando...')
         const b = setTimeout(() => {
             clearInterval(x)
-            message.reply(':x: | Após 2 minutos, eu não consegui realizar a verificação, por favor tente novamente.')
-        }, 120000);
+<<<<<<< HEAD
+            message.channel.send(':x: | Após 1 minuto, eu não consegui realizar a verificação, por favor tente novamente.')
+=======
+            console.log('Timeout')
+            message.channel.send(':x: | Após 2 minutos, eu não consegui realizar a verificação, por favor tente novamente.')
+>>>>>>> 8e9a4c0edcd3de51647ae6690f93a2dcabf3058d
+        }, 60000);
         const x = setInterval(async () => {
           const secondResponse = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
           if(secondResponse.data.robloxId === undefined) {
