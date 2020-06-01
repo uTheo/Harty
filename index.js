@@ -59,29 +59,31 @@ client.on('message', async message => {
       }
   if (command === 'whois') {
     const member = message.mentions.members.first() || client.users.cache.get(args[0])
-    if (!member) return message.reply('Você esqueceu de mencionar ou indicar um ID.')
-    try {
-      const user = client.users.cache.get(message.author.id)
-      const rover = await axios.get(`https://verify.eryn.io/api/user/${member.id}`)
-      if (rover.data.status === 'ok') {
-        const getRobloxStatus = await axios.get(`https://api.roblox.com/users/${rover.data.robloxId}/onlinestatus`)
-        const lastOnline = getRobloxStatus.data.LastOnline
-        const createdDate = moment(getRobloxDetails.data.created)
-        const whoisEmbed = new Discord.MessageEmbed()
-          .setColor('#ed2f21')
-          .setDescription(getRobloxDetails.data.description)
-          .setThumbnail(`http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${rover.data.robloxUsername}`)
-          .setTitle(`Informações sobre ${rover.data.robloxUsername}`)
-          .addFields(
-            { name: 'Username', value: rover.data.robloxUsername },
-            { name: 'Conta criada em', value: createdDate },
-            { name: 'Status', value: getRobloxStatus.data.LastLocation },
-            { name: 'Ultima vez que esteve online', value: moment(lastOnline) },
-            { name: 'Perfil do Roblox', value: `https://www.roblox.com/users/${rover.data.robloxId}/profile` }
-          )
-          .setTimestamp()
-        message.channel.send(whoisEmbed)
-        console.log(`[LOG] ${user.tag} executou o comando whois com sucesso.`)
+ 	if(!member) return message.channel.send("Você esqueceu de mencionar ou indicar um ID.")
+  	try {
+  	const user = client.users.cache.get(message.author.id)
+  	const rover = await axios.get(`https://verify.eryn.io/api/user/${member.id}`)
+  	if(rover.data.status === "ok") {
+  	moment.locale('pt-br')
+  	const getRobloxDetails = await axios.get(`https://users.roblox.com/v1/users/${rover.data.robloxId}`)
+  	const getRobloxStatus = await axios.get(`https://api.roblox.com/users/${rover.data.robloxId}/onlinestatus`)
+  	const lastOnline = getRobloxStatus.data.LastOnline
+  	const createdDate = moment(getRobloxDetails.data.created)
+	const whoisEmbed = new Discord.MessageEmbed()
+	.setColor('#ed2f21')
+	.setDescription(getRobloxDetails.data.description)
+	.setThumbnail(`http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${rover.data.robloxUsername}`)
+	.setTitle(`Informações sobre ${rover.data.robloxUsername}`)
+	.addFields(
+		{ name: 'Roblox Username', value: rover.data.robloxUsername },
+		{ name: 'Conta criada em', value: createdDate },
+		{ name: 'Status', value: getRobloxStatus.data.LastLocation },
+		{ name: 'Ultima vez que esteve online', value: moment(lastOnline) },
+		{ name: 'Perfil do Roblox', value: `https://www.roblox.com/users/${rover.data.robloxId}/profile` },
+	)
+	.setTimestamp();
+	message.channel.send(whoisEmbed)
+	console.log(`[LOG] ${user.tag} executou o comando whois com sucesso.`)
   		}
   	} catch (e) {
     if(e.response.data.errorCode === 404) {
