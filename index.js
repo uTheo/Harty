@@ -30,7 +30,7 @@ client.on('message', async message => {
           return
       }
     } catch(e){
-      if(e.response.status === 404) {
+      if(e.response.data.errorCode === 404) {
         let success = false
         message.reply(':warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) | Esperando...')
         const b = setTimeout(() => {
@@ -84,7 +84,7 @@ client.on('message', async message => {
         console.log(`[LOG] ${user.tag} executou o comando whois com sucesso.`)
   		}
   	} catch (e) {
-    if(e.response.status === 404) {
+    if(e.response.data.errorCode === 404) {
       message.channel.send('Parece que esse usuário não está verificado na database do RoVer.')
   	  console.log(`[LOG] ${user.tag} tentou executar o comando whois, porém sem sucesso.`)
     } else {
@@ -112,7 +112,7 @@ client.on('guildMemberAdd', async member => {
       member.roles.remove(noVerified).catch(console.error)
     }
   } catch (e) {
-    if(e.response.status === 404) {
+    if(e.response.data.errorCode === 404) {
       console.log(`[AutoVerify] ${member.displayName} não existe no banco de dados da RoVer, ou aconteceu um erro inesperado.`)
     }
   }
