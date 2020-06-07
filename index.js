@@ -4,7 +4,7 @@ const moment = require('moment')
 const client = new Discord.Client()
 client.on('ready', () => {
   console.log('[BOT] OK')
-  client.user.setActivity(`Verificando... | V.${require('./package.json').version}`)
+  client.user.setActivity(`thinking about u | V.${require('./package.json').version}`)
 })
 
  // TODO: if a user not have a not verified role and send a message, the bot add the no verified role.
