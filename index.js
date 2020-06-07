@@ -215,7 +215,7 @@ client.on('guildMemberAdd', async member => {
       member.roles.add(verified).catch(console.error)
       member.roles.remove(noVerified).catch(console.error)
       }, 15000);
-      message.author.send('Olá! Seja bem vindo ao servidor do SLEGHART! Eu encontrei você no banco de dados de verificados, então você recebera os cargos em 15 segundos (para evitar conflito com outros bots).')
+      member.send('Olá! Seja bem vindo ao servidor do SLEGHART! Eu encontrei você no banco de dados de verificados, então você recebera os cargos em 15 segundos (para evitar conflito com outros bots).')
     }
   } catch (e) {
     if(e.response.data.errorCode === 404) {
