@@ -1,12 +1,15 @@
 const Discord = require('discord.js')
 const axios = require('axios')
 const moment = require('moment')
+const serverChannels = require('./channels.json')
+const canaryChannels = require('./canaryChannels.json')
 const client = new Discord.Client()
 client.on('ready', () => {
   console.log('[BOT] OK')
   client.user.setActivity(`thinking about u | V.${require('./package.json').version}`)
 })
 
+let prod = true
  // TODO: if a user not have a not verified role and send a message, the bot add the no verified role.
 // TODO: COOLDOWN (due to api ratelimit woosh)
 
@@ -19,7 +22,26 @@ client.on('message', async message => {
   const command = args.shift().toLowerCase()
   const verified = message.guild.roles.cache.get('498294566483656707')
   const noVerified = message.guild.roles.cache.get('567787227258552333')
-  if (command === 'verify') 
+  if(command === 'devmode') {
+      if(message.author.id === '326123612153053184') {
+        prod = false
+        message.channel.send('Development Mode Enabled.')
+      } else {
+          message.channel.send('Sem permissão.')
+      }
+  }
+  if(command === 'prodmode') {
+      if(message.author.id === '326123612153053184') {
+        prod = true
+        message.channel.send('Production Mode Enabled.')
+      } else {
+          message.channel.send('Sem permissão.')
+      }
+  } 
+  if (command === 'verify') {
+    if(prod === false) {
+        return message.channel.send('``DEVMODE_ENABLED`` | O bot atualmente está em manutenção, por favor volte mais tarde.')
+    }
     try {
       const primaryResponse = await axios.get(`https://verify.eryn.io/api/user/${message.author.id}`)
       if(primaryResponse.data.status === 'ok') {
@@ -57,6 +79,7 @@ client.on('message', async message => {
         message.reply('Parece que um erro fatal ocorreu, por favor tente novamente.')
       }
       }
+    }
   if (command === 'whois') {
     const member = message.mentions.members.first() || client.users.cache.get(args[0])
  	if(!member) return message.channel.send("Você esqueceu de mencionar ou indicar um ID.")
@@ -103,6 +126,99 @@ client.on('message', async message => {
       message.reply('Um erro fatal ocorreu, por favor tente novamente')
     }
   }
+  if(command === 'instalock') {
+      console.log('EXEC')
+      let canary = true
+      try {
+        if(prod === true) {
+        console.log('EXEC PROD TRUE')
+        if(message.member.roles.cache.has('573901873677860864')) {
+        let membro = '486165549240287233'
+           serverChannels.forEach(id => {
+               let channel = client.channels.cache.get(id)
+               channel.overwritePermissions([
+                {
+                    id: membro,
+                    deny: 'SEND_MESSAGES'
+                },
+               ], 'Lock ;w;')
+           })
+           let lockembed = new Discord.MessageEmbed()
+           .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
+           .setColor('#1db546')
+           message.channel.send(lockembed)
+        } else {
+            message.channel.send('Você não tem permissão para executar esse comando.')
+        }
+        }
+        if(prod === false) {
+            console.log('EXEC PROD FALSE')
+            if(message.member.roles.cache.has('719034413392068648')) {
+            let membroC = '719034218130178088'
+           canaryChannels.forEach(id => {
+               let channelC = client.channels.cache.get(id)
+               channelC.overwritePermissions([
+                {
+                    id: membroC,
+                    deny: 'SEND_MESSAGES'
+                },
+               ], 'Lock ;w;')
+           })
+           let lockembedC = new Discord.MessageEmbed()
+           .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
+           .setColor('#1db546')
+           message.channel.send(lockembedC)
+        } else {
+            message.channel.send('Sem permissão.')
+        }
+        }
+      } catch(e) {
+        console.log(e)
+        message.channel.send('Um erro fatal ocorreu ao executar esse comando, por favor reporte para sazz#1660.')
+      }
+    }
+    if(command === 'opensv') {
+        console.log('EXEC')
+      let canary = true
+      try {
+        if(prod === true) {
+        console.log('EXEC PROD TRUE')
+        if(message.member.roles.cache.has('573901873677860864')) {
+        let membro = '486165549240287233'
+           serverChannels.forEach(id => {
+               let channel = client.channels.cache.get(id)
+            channel.updateOverwrite(membro, { SEND_MESSAGES: null })
+           })
+           let lockembed = new Discord.MessageEmbed()
+           .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
+           .setColor('#1db546')
+           message.channel.send(lockembed)
+        } else {
+            message.channel.send('Você não tem permissão para executar esse comando.')
+        }
+        }
+        if(prod === false) {
+            console.log('EXEC PROD FALSE')
+            if(message.member.roles.cache.has('719034413392068648')) {
+            let membroC = '719034218130178088'
+           canaryChannels.forEach(id => {
+               let channelC = client.channels.cache.get(id)
+               channelC.updateOverwrite(membroC, { SEND_MESSAGES: null })
+           })
+           let lockembedC = new Discord.MessageEmbed()
+           .setDescription('Chats abertos.')
+           .setColor('#1db546')
+           message.channel.send(lockembedC)
+        } else {
+            message.channel.send('Sem permissão.')
+        }
+        }
+      } catch(e) {
+        console.log(e)
+        message.channel.send('Um erro fatal ocorreu ao executar esse comando, por favor reporte para sazz#1660.')
+      }
+    }
+})
 client.on('guildMemberAdd', async member => {
   try {
     const response = await axios.get(`https://verify.eryn.io/api/user/${member.id}`)
@@ -118,6 +234,5 @@ client.on('guildMemberAdd', async member => {
       console.log(`[AutoVerify] ${member.displayName} não existe no banco de dados da RoVer, ou aconteceu um erro inesperado.`)
     }
   }
-})
 })
 client.login(process.env.TOKEN)
