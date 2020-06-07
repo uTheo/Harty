@@ -12,7 +12,6 @@ client.on('ready', () => {
 let prod = true
  // TODO: if a user not have a not verified role and send a message, the bot add the no verified role.
 // TODO: COOLDOWN (due to api ratelimit woosh)
-
 const prefix = 'h!'
 require('dotenv').config()
 client.on('message', async message => {
@@ -146,27 +145,6 @@ client.on('message', async message => {
             message.channel.send('Você não tem permissão para executar esse comando.')
         }
         }
-        if(prod === false) {
-            console.log('EXEC PROD FALSE')
-            if(message.member.roles.cache.has('719034413392068648')) {
-            let membroC = '719034218130178088'
-           canaryChannels.forEach(id => {
-               let channelC = client.channels.cache.get(id)
-               channelC.overwritePermissions([
-                {
-                    id: membroC,
-                    deny: 'SEND_MESSAGES'
-                },
-               ], 'Lock ;w;')
-           })
-           let lockembedC = new Discord.MessageEmbed()
-           .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
-           .setColor('#1db546')
-           message.channel.send(lockembedC)
-        } else {
-            message.channel.send('Sem permissão.')
-        }
-        }
       } catch(e) {
         console.log(e)
         message.channel.send('Um erro fatal ocorreu ao executar esse comando, por favor reporte para sazz#1660.')
@@ -233,8 +211,11 @@ client.on('guildMemberAdd', async member => {
       const verified = member.guild.roles.cache.get('498294566483656707')
       const noVerified = member.guild.roles.cache.get('567787227258552333')
       console.log(`[AutoVerify] ${member.displayName} foi verificado ao entrar com a conta ${response.data.robloxUsername} (${response.data.robloxId})`)
+      setTimeout(() => {
       member.roles.add(verified).catch(console.error)
       member.roles.remove(noVerified).catch(console.error)
+      }, 15000);
+      message.author.send('Olá! Seja bem vindo ao servidor do SLEGHART! Eu encontrei você no banco de dados de verificados, então você recebera os cargos em 15 segundos (para evitar conflito com outros bots).')
     }
   } catch (e) {
     if(e.response.data.errorCode === 404) {
