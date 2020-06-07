@@ -136,12 +136,7 @@ client.on('message', async message => {
         let membro = '486165549240287233'
            serverChannels.forEach(id => {
                let channel = client.channels.cache.get(id)
-               channel.overwritePermissions([
-                {
-                    id: membro,
-                    deny: 'SEND_MESSAGES'
-                },
-               ], 'Lock ;w;')
+               channel.updateOverwrite(membro, { SEND_MESSAGES: false })
            })
            let lockembed = new Discord.MessageEmbed()
            .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
@@ -216,6 +211,18 @@ client.on('message', async message => {
       } catch(e) {
         console.log(e)
         message.channel.send('Um erro fatal ocorreu ao executar esse comando, por favor reporte para sazz#1660.')
+      }
+    }
+    if(command === 'cagadafix') {
+    if(message.author.id === '326123612153053184') {
+    serverChannels.forEach(id => {
+    let channel = client.channels.cache.get(id)
+    let membro = '719025911978000396'
+    channel.updateOverwrite(membro, { MANAGE_ROLES: true })
+    });
+
+      } else {
+          message.channel.send('Sem permissão.')
       }
     }
 })
