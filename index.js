@@ -190,7 +190,7 @@ client.on('message', async message => {
             channel.updateOverwrite(membro, { SEND_MESSAGES: null })
            })
            let lockembed = new Discord.MessageEmbed()
-           .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
+           .setDescription('Chats abertos.')
            .setColor('#1db546')
            message.channel.send(lockembed)
         } else {
