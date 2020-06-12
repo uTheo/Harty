@@ -137,8 +137,11 @@ client.on('message', async message => {
                let channel = client.channels.cache.get(id)
                channel.updateOverwrite(membro, { SEND_MESSAGES: false })
            })
+           let coolUsers = ["Bismark","Sazz","Jaspion","Lily","SLEGHART","Lipe","DoguinhoHart","telecom","Orbot","Lord","Orcadius","dollyinhomlg","Livwu","Sunglasses","samodium","CIA","Felipz (baiano)", "Rangeel","xMarcelo","Sate","p4l","Shiny_Gen","Noob.","Mask","Gianblox","Derik","Math","Calango","ph"]
+           const randomcooluser = coolUsers[Math.floor(Math.random() * coolUsers.length)];
            let lockembed = new Discord.MessageEmbed()
            .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
+           .setFooter(`${randomcooluser} é o escolhido dessa noite.`)
            .setColor('#1db546')
            message.channel.send(lockembed)
         } else {
