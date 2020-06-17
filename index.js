@@ -135,6 +135,7 @@ client.on('message', async message => {
         let membro = '486165549240287233'
            serverChannels.forEach(id => {
                let channel = client.channels.cache.get(id)
+               if(channel === undefined || channel === null) return;
                channel.updateOverwrite(membro, { SEND_MESSAGES: false })
            })
            let coolUsers = ["Bismark","Sazz","Jaspion","Lily","SLEGHART","Lipe","DoguinhoHart","telecom","Orbot","Lord","Orcadius","dollyinhomlg","Livwu","Sunglasses","samodium","CIA","Felipz (baiano)", "Rangeel","xMarcelo","Sate","p4l","Shiny_Gen","Noob.","Mask","Gianblox","Derik","Math","Calango","ph"]
