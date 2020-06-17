@@ -163,7 +163,8 @@ client.on('message', async message => {
         if(message.member.roles.cache.has('573901873677860864')) {
         let membro = '486165549240287233'
            serverChannels.forEach(id => {
-               let channel = client.channels.cache.get(id)
+            let channel = client.channels.cache.get(id)
+            if(channel === undefined || channel === null) return;
             channel.updateOverwrite(membro, { SEND_MESSAGES: null })
            })
            let lockembed = new Discord.MessageEmbed()
