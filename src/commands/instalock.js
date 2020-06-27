@@ -1,6 +1,7 @@
 const { Command } = require('../structures/Command')
 const serverChannels = require('../../channels.json')
 const Discord = require('discord.js')
+const { coolUsers } = require('../util/coolusers')
 module.exports = class InstaLock extends Command {
   constructor (client) {
     super(client, {
@@ -21,7 +22,6 @@ module.exports = class InstaLock extends Command {
                if(channel === undefined || channel === null) return;
                channel.updateOverwrite(membro, { SEND_MESSAGES: false })
            })
-           let coolUsers = ["Bismark","Sazz","Jaspion","Lily","SLEGHART","Lipe","DoguinhoHart","telecom","Orbot","Lord","Orcadius","dollyinhomlg","Livwu","Sunglasses","samodium","CIA","Felipz (baiano)", "Rangeel","xMarcelo","Sate","p4l","Shiny_Gen","Noob.","Mask","Gianblox","Derik","Math","Calango","ph"]
            const randomcooluser = coolUsers[Math.floor(Math.random() * coolUsers.length)];
            let lockembed = new Discord.MessageEmbed()
            .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
