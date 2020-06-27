@@ -25,7 +25,7 @@ module.exports = class InstaLock extends Command {
            const randomcooluser = coolUsers[Math.floor(Math.random() * coolUsers.length)];
            let lockembed = new Discord.MessageEmbed()
            .setDescription('Chats fechados, para re-abrir um Locker precisa usar o comando ``opensv``.')
-           .setFooter(`${randomcooluser} é o escolhido dessa noite.`)
+           .setFooter(`${randomcooluser} é o(a) escolhido(a) dessa noite.`)
            .setColor('#1db546')
            message.channel.send(lockembed)
         } else {
