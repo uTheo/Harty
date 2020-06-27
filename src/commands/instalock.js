@@ -1,5 +1,6 @@
 const { Command } = require('../structures/Command')
 const serverChannels = require('../../channels.json')
+const Discord = require('discord.js')
 module.exports = class InstaLock extends Command {
   constructor (client) {
     super(client, {
@@ -8,6 +9,7 @@ module.exports = class InstaLock extends Command {
       requiredPermissions: null,
       dev: false
     })
+    this.client = client
   }
 
   async run ({ message }) {
@@ -15,7 +17,7 @@ module.exports = class InstaLock extends Command {
     if(message.member.roles.cache.has('573901873677860864')) {
         let membro = '486165549240287233'
            serverChannels.forEach(id => {
-               let channel = client.channels.cache.get(id)
+               let channel = this.client.channels.cache.get(id)
                if(channel === undefined || channel === null) return;
                channel.updateOverwrite(membro, { SEND_MESSAGES: false })
            })
