@@ -18,6 +18,7 @@ module.exports.RoAPI = class RoAPI {
         this.message.reply('Vish, parece que eu não encontrei nenhum ID nessa requisição, se isso parecer estranho para você, reporte para sazz#1660.')
         return
     }
+    try {
      const primaryResponse = await axios.get(`https://verify.eryn.io/api/user/${id}`)
      if(primaryResponse.data.status === 'ok') {
         const verified = this.message.guild.roles.cache.get(Roles.verified)
@@ -25,6 +26,13 @@ module.exports.RoAPI = class RoAPI {
         this.message.member.roles.add(verified).catch(console.error)
         this.message.member.roles.remove(noVerified).catch(console.error)
         this.message.reply(`:green_apple: | Seja Bem Vindo ${primaryResponse.data.robloxUsername}! `)
+    }
+    } catch(e) {
+        if(e.response.status === 404|| !e.response.data === undefined) {
+            this.message.reply(':warning: | Por favor, se verifique em https://verify.eryn.io (Clique em Sign With Discord) e use novamente o comando h!verify')
+          } else {
+            this.message.reply(`Parece que um erro fatal ocorreu, envie uma print dessa mensagem para <@326123612153053184>\n\`${e.stack}\``)
+          }
     }
 }
     async whois(id) {
