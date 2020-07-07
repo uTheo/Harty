@@ -33,4 +33,5 @@ module.exports.coolUsers = [
     "lu",
     "Felipe",
     "Mango"
+    //obs nao sou cooluser mas quero colocar o membro comum de cooluser mas nao consigo faz isso ap mim sazz ;(
 ]
