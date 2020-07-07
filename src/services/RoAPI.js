@@ -48,7 +48,7 @@ module.exports.RoAPI = class RoAPI {
         let createdISO = parseISO(getRobloxDetails.data.created)
         const formattedLast = format(
             lastISO, 
-            'dd/MM/yyyy'
+            'MM/dd/yyyy'
         );
         const formattedCreated = format(
             createdISO, 
