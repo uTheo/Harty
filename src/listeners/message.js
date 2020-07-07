@@ -10,8 +10,9 @@ module.exports = class Message {
       const command = args.shift().toLowerCase()
       const fancyCommand = this.client.commands.get(command)
       const requiredPermissions = fancyCommand.requiredPermissions
-      let prod = true
-      if(!prod) return message.reply('oooo devmode!')
+      if(message.content === 'obama ban') {
+        message.author.send('https://media.discordapp.net/attachments/609005348304715776/727216642857369610/20200624_214625.gif')
+      }
       if (fancyCommand.dev === true) {
         if (message.author.id !== process.env.BOT_OWNER_ID) {
           return message.reply('You do not have the required permissions to use this command.')
