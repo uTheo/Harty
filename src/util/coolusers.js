@@ -31,5 +31,6 @@ module.exports.coolUsers = [
     "Otavio",
     "Gina",
     "lu",
-    "Felipe"
+    "Felipe",
+    "Mango"
 ]
