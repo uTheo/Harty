@@ -32,5 +32,5 @@ module.exports.coolUsers = [
     "Gina",
     "lu",
     "Felipe",
-    "Mango"
+    "O Membro comum que não fala no chat"
 ]
